@@ -26,8 +26,8 @@ data pengukuran beban gardu per jurusan dan per fasa (R, S, T, N).
 
 Setiap push ke repo ini otomatis di-build oleh GitHub Actions:
 
-1. Buka tab **Actions** → workflow **Build APK** → run terbaru.
-2. Unduh artifact **TangAmpereAI-debug-apk**, ekstrak, lalu instal `app-debug.apk` di HP
+1. Buka halaman **Releases** → **Tang Ampere AI (build terbaru)**.
+2. Unduh **TangAmpereAI.apk** langsung dari HP, lalu buka file tersebut untuk menginstal
    (izinkan "Instal dari sumber tidak dikenal").
 
 Atau build sendiri dengan Android Studio (Koala atau lebih baru) / command line:

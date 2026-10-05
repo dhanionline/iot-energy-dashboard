@@ -12,8 +12,19 @@ android {
         applicationId = "com.dhani.tangampere"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
+        versionCode = (System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1)
         versionName = "1.0.0"
+    }
+
+    // Kunci tanda tangan tetap (khusus uji coba) agar APK versi baru bisa
+    // meng-update aplikasi yang sudah terpasang tanpa harus uninstall.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug-signing.jks")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
     }
 
     buildTypes {
