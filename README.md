@@ -14,7 +14,14 @@ data pengukuran beban gardu per jurusan dan per fasa (R, S, T, N).
   (`O→0`, `S→5`, `B→8`, `l→1`, dll.) dikoreksi otomatis; teks spesifikasi seperti
   `CAT III 600V` dan nomor model (`UT204`) diabaikan. Angka terbesar di layar yang
   berlabel `A` diberi skor tertinggi.
-- ✅ **Pilih / koreksi hasil** — beberapa kandidat ditampilkan, dan nilai tetap bisa diedit manual.
+- 🧠 **Pemilihan angka cerdas** — tiap angka diberi skor berdasarkan: ukuran (digit LCD paling besar),
+  satuan `A` di sebelahnya, posisi dekat tengah foto, berdiri sendiri di barisnya, bukan label skala
+  saklar (200/400/600…) atau spesifikasi, nilai wajar untuk arus gardu, dan **sebanding dengan fasa lain**
+  di gardu & jurusan yang sama (24 jam terakhir). Alasan pemilihan ditampilkan di layar.
+- 👆 **Ketuk angka langsung di foto** — semua angka yang dikenali diberi kotak; ketuk kotak yang benar.
+- ✂️ **Tandai layar** — tarik kotak mengelilingi layar LCD, AI membaca ulang hanya area itu
+  (diperbesar hingga 4×), sehingga tulisan di badan alat tidak ikut terbaca.
+- ⚠️ **Peringatan ragu-ragu** — jika dua kandidat skornya berdekatan, aplikasi meminta Anda memeriksa.
 - 🗂️ **Simpan per gardu → jurusan (Induk, A–D) → fasa (R/S/T/N)**, lengkap dengan foto bukti.
   Setelah simpan, fasa otomatis maju (R → S → T → N) agar pengukuran di lapangan cepat.
 - 📊 **Analisis beban**: persentase ketidakseimbangan beban

@@ -7,26 +7,23 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Button
@@ -47,9 +44,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -140,17 +134,37 @@ fun MeasureScreen(vm: MainViewModel, modifier: Modifier = Modifier) {
         }
 
         state.bitmap?.let { bmp ->
-            Box(contentAlignment = Alignment.Center) {
-                Image(
-                    bitmap = bmp.asImageBitmap(),
-                    contentDescription = "Foto tang ampere",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 280.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                )
-                if (state.busy) CircularProgressIndicator()
+            PhotoOverlay(
+                bitmap = bmp,
+                candidates = state.candidates,
+                selectedValue = state.valueText,
+                region = state.region,
+                selectingRegion = state.selectingRegion,
+                busy = state.busy,
+                onPick = vm::pickCandidate,
+                onRegion = vm::readRegion,
+            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                if (state.selectingRegion) {
+                    Text(
+                        "Tarik kotak mengelilingi layar LCD pada foto",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.weight(1f),
+                    )
+                    TextButton(onClick = { vm.setSelectingRegion(false) }) { Text("Batal") }
+                } else {
+                    Text(
+                        "Ketuk kotak angka pada foto untuk memilihnya.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.weight(1f),
+                    )
+                    OutlinedButton(onClick = { vm.setSelectingRegion(true) }, enabled = !state.busy) {
+                        Icon(Icons.Filled.Crop, null)
+                        Spacer(Modifier.width(6.dp))
+                        Text("Tandai layar")
+                    }
+                }
             }
         }
         if (state.busy && state.bitmap == null) {
@@ -172,6 +186,16 @@ fun MeasureScreen(vm: MainViewModel, modifier: Modifier = Modifier) {
                         selected = state.valueText == c.display,
                         onClick = { vm.pickCandidate(c) },
                         label = { Text("${c.display} ${c.unit}") },
+                    )
+                }
+            }
+            state.candidates.firstOrNull { it.display == state.valueText }?.let { c ->
+                if (c.reasons.isNotEmpty()) {
+                    Text(
+                        "Dasar pilihan: " + c.reasons.joinToString(", ") +
+                            if (c.votes > 1) ", terbaca di ${c.votes} varian gambar" else "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
